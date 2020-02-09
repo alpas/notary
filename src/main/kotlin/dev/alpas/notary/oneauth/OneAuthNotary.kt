@@ -1,4 +1,4 @@
-package dev.alpas.notary
+package dev.alpas.notary.oneauth
 
 import com.github.scribejava.core.builder.ServiceBuilder
 import com.github.scribejava.core.builder.api.DefaultApi10a
@@ -8,6 +8,7 @@ import com.github.scribejava.core.model.OAuthRequest
 import com.github.scribejava.core.model.Verb
 import com.github.scribejava.core.oauth.OAuth10aService
 import dev.alpas.http.HttpCall
+import dev.alpas.notary.Notary
 import dev.alpas.orAbort
 
 internal const val REQUEST_TOKEN_SESSION_NAME = "notary.requestToken"
@@ -49,17 +50,24 @@ abstract class OneAuthNotary(protected val call: HttpCall) : Notary {
     }
 
     protected open fun fetchRequestTokenFromSession(): OAuth1RequestToken {
-        return call.session.pull<OAuth1RequestToken>(REQUEST_TOKEN_SESSION_NAME).orAbort()
+        return call.session.pull<OAuth1RequestToken>(
+            REQUEST_TOKEN_SESSION_NAME
+        ).orAbort()
     }
 
-    protected open fun fetchRequestToken(): OAuth1AccessToken {
+    /**
+     * Return an access token by looking for an oauth_verifier parameter
+     * in the call and getting the request token from the the session.
+     *
+     * @return The access token.
+     */
+    protected open fun accessToken(): OAuth1AccessToken {
         val verifier = call.paramAsString("oauth_verifier").orAbort()
         return service.getAccessToken(fetchRequestTokenFromSession(), verifier)
     }
 
     /**
-     * Make a request with the API service at the given url endpoint. If an access token
-     * is not passed, it will attempt to pull the token from the current session.
+     * Make a request with the API service at the given url endpoint.
      *
      * @param url The endpoint.
      * @param token The access token. If empty will be pulled from the current session.
@@ -68,7 +76,7 @@ abstract class OneAuthNotary(protected val call: HttpCall) : Notary {
     protected open fun makeRequest(url: String, token: OAuth1AccessToken? = null, verb: Verb = Verb.GET): String {
         val request = OAuthRequest(verb, url).also {
             visit(it)
-            service.signRequest(token ?: fetchRequestToken(), it)
+            service.signRequest(token ?: accessToken(), it)
         }
 
         return service.use { it.execute(request).body }

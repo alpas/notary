@@ -3,6 +3,7 @@ package dev.alpas.notary
 import dev.alpas.Config
 import dev.alpas.Environment
 import dev.alpas.http.HttpCall
+import dev.alpas.notary.oneauth.TwitterNotary
 
 typealias NotaryFactory = (call: HttpCall) -> Notary
 
@@ -10,7 +11,9 @@ typealias NotaryFactory = (call: HttpCall) -> Notary
 open class NotaryConfig(env: Environment) : Config {
     private val notaries = mutableMapOf<String, NotaryFactory>()
     private val defaultNotaries: Map<String, NotaryFactory> by lazy {
-        mapOf<String, NotaryFactory>("twitter" to { call -> TwitterNotary(call, env) })
+        mapOf<String, NotaryFactory>(
+            "twitter" to { call -> TwitterNotary(call, env) }
+        )
     }
 
     /**

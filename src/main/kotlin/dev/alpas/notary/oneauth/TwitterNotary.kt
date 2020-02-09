@@ -1,4 +1,4 @@
-package dev.alpas.notary
+package dev.alpas.notary.oneauth
 
 import com.github.scribejava.apis.TwitterApi
 import com.github.scribejava.core.model.OAuthRequest
@@ -29,8 +29,12 @@ open class TwitterNotary(
     override fun apiService(): TwitterApi = TwitterApi.instance()
 
     protected open fun fetchUserDetails(): Map<String, Any?> {
-        val details = makeRequest(userDetailsUrl)
-        return JsonSerializer.deserialize(details)
+        val token = accessToken()
+        val details = makeRequest(userDetailsUrl, token)
+        return JsonSerializer.deserialize<MutableMap<String, Any?>>(details).also {
+            it["access_token"] = token.token
+            it["access_token_secret"] = token.tokenSecret
+        }
     }
 
     override fun visit(request: OAuthRequest) {
