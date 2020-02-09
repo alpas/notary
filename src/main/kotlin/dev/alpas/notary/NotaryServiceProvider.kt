@@ -15,7 +15,7 @@ class NotaryServiceProvider : ServiceProvider {
 }
 
 /**
- * Return a full built Notary object for the given name searing in the NotaryConfig.
+ * Return a full built Notary object for the given name by looking in the NotaryConfig.
  */
 fun HttpCall.notary(name: String): Notary {
     return make<NotaryConfig>().notary(this, name).apply {
