@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+MY_PATH=$(dirname "$0")
+MY_PATH=$( (cd "$MY_PATH" && pwd))
+APP_PATH="${MY_PATH}"
+
+export alpas_run_mode="console"
+export alpas_root_dir="$APP_PATH"
+
+./gradlew run -q --args="$*" #>/dev/null 2>&1
+
+unset alpas_run_mode
+unset alpas_root_dir
