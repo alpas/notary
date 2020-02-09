@@ -21,7 +21,7 @@ fun main(args: Array<String>) = Alpas(args) {
 
 You need three variables in your `.env` file:
 
-```toml
+```
 
 TWITTER_API_KEY=
 TWITTER_API_SECRET=
