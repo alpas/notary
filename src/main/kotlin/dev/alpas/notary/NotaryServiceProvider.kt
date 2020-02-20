@@ -12,10 +12,10 @@ class NotaryServiceProvider : ServiceProvider {
 }
 
 /**
- * Return a full built Notary object for the given name by looking in the NotaryConfig.
+ * Return a fully built Notary object for the given name by looking in the NotaryConfig.
  */
 fun HttpCall.notary(name: String? = null): Notary {
-    val notaryName = (name ?: paramAsString("notary")).orAbort()
+    val notaryName = (name ?: stringParam("notary")).orAbort()
     return make<NotaryConfig>().notary(this, notaryName).apply {
         build(ServiceBuilder(apiKey).apiSecret(apiSecret).callback(callback))
     }
