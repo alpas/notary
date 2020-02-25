@@ -14,7 +14,7 @@ open class NotaryConfig(env: Environment) : Config {
     private val defaultNotaries: Map<String, NotaryFactory> by lazy {
         mapOf<String, NotaryFactory>(
             "twitter" to { call -> TwitterNotary(call, env) },
-            "github" to { call -> GitHubNotary(call, env) }
+            "github" to { call -> GitHubNotary(call, env, "user") }
         )
     }
 

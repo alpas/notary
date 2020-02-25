@@ -16,7 +16,7 @@ internal const val REQUEST_TOKEN_SESSION_NAME = "notary.requestToken"
 /**
  * An abstract Notary class that should be extended by API services that support the OAuth1 protocol such as Twitter.
  */
-abstract class OneAuthNotary(protected val call: HttpCall) : Notary {
+abstract class OneAuthNotary(protected val call: HttpCall, private val scope: String?) : Notary {
     protected lateinit var service: OAuth10aService
         private set
 
@@ -29,10 +29,11 @@ abstract class OneAuthNotary(protected val call: HttpCall) : Notary {
 
     override fun build(builder: ServiceBuilder) {
         visit(builder)
+        builder.withScope(scope)
         service = builder.build(apiService())
     }
 
-    override fun redirect() {
+    override fun redirect(params: Map<String, String>) {
         val url = service.use { authService ->
             val requestToken = authService.requestToken.also { saveRequestTokenInSession(it) }
             authService.getAuthorizationUrl(requestToken)

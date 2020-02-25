@@ -10,8 +10,9 @@ open class TwitterNotary(
     call: HttpCall,
     override val apiKey: String,
     override val apiSecret: String,
-    override val callback: String? = null
-) : OneAuthNotary(call) {
+    override val callback: String? = null,
+    scope: String? = null
+) : OneAuthNotary(call, scope) {
 
     protected open val userDetailsUrl = "https://api.twitter.com/1.1/account/verify_credentials.json"
 
@@ -19,11 +20,12 @@ open class TwitterNotary(
         return TwitterUser(fetchUserDetails())
     }
 
-    constructor(call: HttpCall, env: Environment) : this(
+    constructor(call: HttpCall, env: Environment, scope: String? = null) : this(
         call,
         env("TWITTER_API_KEY")!!,
         env("TWITTER_API_SECRET")!!,
-        env("TWITTER_API_CALLBACK")
+        env("TWITTER_API_CALLBACK"),
+        scope
     )
 
     override fun apiService(): TwitterApi = TwitterApi.instance()

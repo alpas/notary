@@ -10,8 +10,10 @@ open class GitHubNotary(
     call: HttpCall,
     override val apiKey: String,
     override val apiSecret: String,
-    override val callback: String? = null
-) : TwoAuthNotary(call) {
+    override val callback: String? = null,
+    scope: String? = null,
+    additionalParams: Map<String, String>? = null
+) : TwoAuthNotary(call, scope, additionalParams) {
 
     protected open val userDetailsUrl = "https://api.github.com/user"
 
@@ -19,11 +21,13 @@ open class GitHubNotary(
         return GitHubUser(fetchUserDetails())
     }
 
-    constructor(call: HttpCall, env: Environment) : this(
+    constructor(call: HttpCall, env: Environment, scope: String? = null, additionalParams: Map<String, String>? = null) : this(
         call,
         env("GITHUB_API_KEY")!!,
         env("GITHUB_API_SECRET")!!,
-        env("GITHUB_API_CALLBACK")
+        env("GITHUB_API_CALLBACK"),
+        scope,
+        additionalParams
     )
 
     override fun apiService(): GitHubApi = GitHubApi.instance()

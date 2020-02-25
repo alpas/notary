@@ -14,20 +14,28 @@ import dev.alpas.secureRandomString
 
 internal const val NOTARY_STATE_SESSION_NAME = "notary.state"
 
-abstract class TwoAuthNotary(protected val call: HttpCall) : Notary {
+abstract class TwoAuthNotary(
+    protected val call: HttpCall,
+    private val scope: String? = null,
+    private val additionalParams: Map<String, String>? = null
+) : Notary {
     private lateinit var service: OAuth20Service
     protected abstract fun apiService(): DefaultApi20
 
     override fun build(builder: ServiceBuilder) {
         visit(builder)
+        builder.withScope(scope)
         service = builder.build(apiService())
     }
 
-    override fun redirect() {
+    override fun redirect(params: Map<String, String>) {
         val url = service.use { authService ->
             val state = secureRandomString(25)
             saveStateInSession(state)
-            authService.getAuthorizationUrl(state)
+            authService.createAuthorizationUrlBuilder().also {
+                it.additionalParams((additionalParams ?: emptyMap()) + params)
+                it.state(state)
+            }.build()
         }
         call.redirect().toExternal(url)
     }
