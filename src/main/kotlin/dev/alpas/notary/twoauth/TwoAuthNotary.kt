@@ -24,7 +24,9 @@ abstract class TwoAuthNotary(
 
     override fun build(builder: ServiceBuilder) {
         visit(builder)
-        builder.withScope(scope)
+        if (!scope.isNullOrBlank()) {
+            builder.withScope(scope)
+        }
         service = builder.build(apiService())
     }
 

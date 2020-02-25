@@ -29,7 +29,9 @@ abstract class OneAuthNotary(protected val call: HttpCall, private val scope: St
 
     override fun build(builder: ServiceBuilder) {
         visit(builder)
-        builder.withScope(scope)
+        if (!scope.isNullOrBlank()) {
+            builder.withScope(scope)
+        }
         service = builder.build(apiService())
     }
 
