@@ -4,7 +4,7 @@ import dev.alpas.Config
 import dev.alpas.Environment
 import dev.alpas.http.HttpCall
 import dev.alpas.notary.oneauth.TwitterNotary
-import dev.alpas.notary.twoauth.GitHubNotary
+import dev.alpas.notary.twoauth.GoogleNotary
 
 typealias NotaryFactory = (call: HttpCall) -> Notary
 
@@ -14,7 +14,7 @@ open class NotaryConfig(env: Environment) : Config {
     private val defaultNotaries: Map<String, NotaryFactory> by lazy {
         mapOf<String, NotaryFactory>(
             "twitter" to { call -> TwitterNotary(call, env) },
-            "github" to { call -> GitHubNotary(call, env, "user") }
+            "google" to { call -> GoogleNotary(call, env, "openid profile email") }
         )
     }
 
