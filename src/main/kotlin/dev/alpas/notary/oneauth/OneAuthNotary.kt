@@ -35,12 +35,12 @@ abstract class OneAuthNotary(protected val call: HttpCall, private val scope: St
         service = builder.build(apiService())
     }
 
-    override fun redirect(params: Map<String, String>) {
+    override fun redirect(params: Map<String, String>, headers: Map<String, String>) {
         val url = service.use { authService ->
             val requestToken = authService.requestToken.also { saveRequestTokenInSession(it) }
             authService.getAuthorizationUrl(requestToken)
         }
-        call.redirect().toExternal(url)
+        call.redirect().toExternal(url, headers = headers)
     }
 
     /**

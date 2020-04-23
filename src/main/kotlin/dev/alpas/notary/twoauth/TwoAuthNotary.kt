@@ -30,7 +30,7 @@ abstract class TwoAuthNotary(
         service = builder.build(apiService())
     }
 
-    override fun redirect(params: Map<String, String>) {
+    override fun redirect(params: Map<String, String>, headers: Map<String, String>) {
         val url = service.use { authService ->
             val state = secureRandomString(25)
             saveStateInSession(state)
@@ -39,7 +39,7 @@ abstract class TwoAuthNotary(
                 it.state(state)
             }.build()
         }
-        call.redirect().toExternal(url)
+        call.redirect().toExternal(url, headers = headers)
     }
 
     /**

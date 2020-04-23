@@ -30,7 +30,7 @@ interface Notary {
     /**
      * Redirect the current call for notarization.
      */
-    fun redirect(params: Map<String, String> = emptyMap())
+    fun redirect(params: Map<String, String> = emptyMap(), headers: Map<String, String> = emptyMap())
 
     /**
      * The notarized user.

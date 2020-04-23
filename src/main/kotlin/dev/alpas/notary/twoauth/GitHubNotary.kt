@@ -23,8 +23,8 @@ open class GitHubNotary(
 
     constructor(call: HttpCall, env: Environment, scope: String? = null, additionalParams: Map<String, String>? = null) : this(
         call,
-        env("GITHUB_API_KEY")!!,
-        env("GITHUB_API_SECRET")!!,
+        env("GITHUB_API_CLIENT_ID")!!,
+        env("GITHUB_API_CLIENT_SECRET")!!,
         env("GITHUB_API_CALLBACK"),
         scope,
         additionalParams
