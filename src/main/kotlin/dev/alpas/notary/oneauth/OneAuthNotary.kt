@@ -65,7 +65,7 @@ abstract class OneAuthNotary(protected val call: HttpCall, private val scope: St
      * @return The access token.
      */
     protected open fun accessToken(): OAuth1AccessToken {
-        val verifier = call.stringParam("oauth_verifier").orAbort()
+        val verifier = call.string("oauth_verifier")
         return service.getAccessToken(fetchRequestTokenFromSession(), verifier)
     }
 

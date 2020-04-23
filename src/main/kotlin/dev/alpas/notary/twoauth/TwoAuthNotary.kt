@@ -64,12 +64,12 @@ abstract class TwoAuthNotary(
      * @return The access token.
      */
     protected open fun accessToken(): OAuth2AccessToken {
-        val receivedSecret = call.stringParam("state").orAbort()
+        val receivedSecret = call.string("state")
         val sentSecret = fetchStateFromSession().orAbort()
         if (sentSecret != receivedSecret) {
             throw NotFoundHttpException()
         }
-        val code = call.stringParam("code").orAbort()
+        val code = call.string("code")
         return service.getAccessToken(code)
     }
 
